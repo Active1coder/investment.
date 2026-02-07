@@ -3,164 +3,1053 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoSphere | Investment Dashboard</title>
+    <title>CryptoSense | Secure Crypto Investments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== CSS RESET & VARIABLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: #ffffff;
+            --sidebar-bg: #0f172a;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #f8fafc;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ===== LAYOUT CONTAINERS ===== */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page-container {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .page-container.active {
+            display: block;
+        }
+
+        /* ===== TYPOGRAPHY ===== */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: var(--primary);
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--gray);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-card i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            padding: 20px;
+            border-radius: 50%;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        /* ===== AUTH PAGES ===== */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 120px);
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .auth-header h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .auth-header p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .form-check input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--gray);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard-container {
+            display: flex;
+            min-height: calc(100vh - 120px);
+            background: #f1f5f9;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .sidebar-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar-nav a.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            min-height: 100%;
+        }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-container {
+            background: #f1f5f9;
+            min-height: calc(100vh - 120px);
+            padding: 30px;
+        }
+
+        .admin-header {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .positive {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* ===== TABLES ===== */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            background: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            color: var(--gray);
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        /* ===== WALLET ADDRESS ===== */
+        .wallet-address {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            padding: 30px;
+            animation: modalFade 0.3s;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 20px;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px 0;
+                margin-top: 20px;
+                border-top: 1px solid #e2e8f0;
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+            }
+            
+            .auth-card {
+                padding: 30px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .auth-card {
+                padding: 25px 20px;
+            }
+            
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+        .text-center { text-align: center; }
+        .mb-1 { margin-bottom: 10px; }
+        .mb-2 { margin-bottom: 20px; }
+        .mb-3 { margin-bottom: 30px; }
+        .mt-1 { margin-top: 10px; }
+        .mt-2 { margin-top: 20px; }
+        .mt-3 { margin-top: 30px; }
+        .w-100 { width: 100%; }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <a href="index.html" class="logo">
-                <i class="fas fa-coins"></i>
-                <span>CryptoSphere</span>
-            </a>
-            
-            <div class="main-nav">
-                <a href="index.html" class="nav-link active">Dashboard</a>
-                <a href="#investments" class="nav-link">Investments</a>
-                <a href="#wallet" class="nav-link">Wallet</a>
-                <a href="admin.html" class="nav-link">Admin</a>
-            </div>
-            
-            <div class="user-info">
-                <div class="balance-card">
-                    <div>Total Balance</div>
-                    <div class="balance-amount">$<span id="totalBalance">45,287.50</span></div>
-                </div>
-                <div class="balance-card">
-                    <div>Today's Profit</div>
-                    <div class="balance-amount positive">+$<span id="dailyProfit">1,245.30</span></div>
-                </div>
-                <a href="login.html" class="secondary-btn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo" id="homeLogo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>CryptoSense</h1>
                 </a>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="navLinks">
+                    <a href="#" id="homeLink">Home</a>
+                    <a href="#" id="featuresLink">Features</a>
+                    <a href="#" id="aboutLink">About</a>
+                    <a href="#" id="loginLink">Login</a>
+                    <a href="#" id="signupLink" class="btn btn-primary">Sign Up Free</a>
+                </div>
             </div>
-        </header>
+        </div>
+    </nav>
 
-        <!-- Dashboard -->
-        <div class="dashboard-content">
-            <!-- Welcome Banner -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Welcome back, John! 👋</h2>
-                    <button class="primary-btn" onclick="openDepositModal()">
-                        <i class="fas fa-wallet"></i> Deposit Funds
+    <!-- Page Container -->
+    <div id="pageContainer">
+        <!-- Landing Page -->
+        <div id="landingPage" class="page-container active fade-in">
+            <div class="container">
+                <div class="hero">
+                    <h2>Smart Cryptocurrency Investments</h2>
+                    <p>Start investing in Bitcoin, Ethereum, and other cryptocurrencies with as little as $100. Get professional portfolio management and secure wallet integration.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" id="getStartedBtn">
+                            <i class="fas fa-rocket"></i> Get Started
+                        </button>
+                        <button class="btn btn-outline" id="learnMoreBtn">
+                            <i class="fas fa-play-circle"></i> How It Works
+                        </button>
+                    </div>
+                </div>
+
+                <div class="features">
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Secure Deposits</h3>
+                        <p>Deposit via secure wallet addresses. All deposits are processed in USD for easy tracking.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Portfolio Management</h3>
+                        <p>Diversify your investments across multiple cryptocurrencies with professional management.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-user-shield"></i>
+                        <h3>Admin Controls</h3>
+                        <p>Complete admin panel for managing user balances and platform settings.</p>
+                    </div>
+                </div>
+
+                <div class="feature-card text-center">
+                    <h2 class="mb-2">Ready to Start Investing?</h2>
+                    <p class="mb-3" style="color: var(--gray);">Join thousands of investors who trust CryptoSense with their cryptocurrency investments.</p>
+                    <button class="btn btn-primary" id="joinNowBtn">
+                        <i class="fas fa-user-plus"></i> Create Free Account
                     </button>
                 </div>
-                <p style="opacity: 0.9; margin-bottom: 20px;">
-                    Your investments are performing well today. Total profit increased by 2.7% in the last 24 hours.
-                </p>
             </div>
+        </div>
 
-            <!-- Crypto Investments -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">Your Crypto Portfolio</h2>
-                    <span class="positive">+$1,245.30 (2.7%) Today</span>
-                </div>
-                <div class="crypto-grid">
-                    <!-- Bitcoin -->
-                    <div class="crypto-card">
-                        <div class="crypto-header">
-                            <div class="crypto-name">
-                                <i class="fab fa-bitcoin" style="color: #f7931a;"></i>
-                                <span>Bitcoin (BTC)</span>
-                            </div>
-                            <div class="crypto-price">$42,156.78</div>
-                        </div>
-                        <div class="crypto-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+3.2%</span>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <div>Your Holdings: <strong>0.85 BTC</strong></div>
-                            <div>Value: <strong class="positive">$35,833.26</strong></div>
-                        </div>
+        <!-- Signup Page -->
+        <div id="signupPage" class="page-container">
+            <div class="auth-container">
+                <div class="auth-card fade-in">
+                    <div class="auth-header">
+                        <h2>Create Account</h2>
+                        <p>Start your investment journey today</p>
                     </div>
-
-                    <!-- Ethereum -->
-                    <div class="crypto-card">
-                        <div class="crypto-header">
-                            <div class="crypto-name">
-                                <i class="fab fa-ethereum" style="color: #627eea;"></i>
-                                <span>Ethereum (ETH)</span>
-                            </div>
-                            <div class="crypto-price">$2,856.42</div>
+                    
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" class="form-control" placeholder="John Doe" required>
                         </div>
-                        <div class="crypto-change positive">
-<i class="fas fa-arrow-up"></i>
-                            <span>+1.8%</span>
+                        
+                        <div class="form-group">
+                            <label for="signupEmail">Email Address</label>
+                            <input type="email" id="signupEmail" class="form-control" placeholder="john@example.com" required>
                         </div>
-                        <div style="margin-top: 15px;">
-                            <div>Your Holdings: <strong>4.2 ETH</strong></div>
-                            <div>Value: <strong class="positive">$11,996.96</strong></div>
+                        
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" class="form-control" placeholder="••••••••" minlength="8" required>
                         </div>
-                    </div>
-
-                    <!-- Cardano -->
-                    <div class="crypto-card">
-                        <div class="crypto-header">
-                            <div class="crypto-name">
-                                <i class="fas fa-chart-line" style="color: #0033ad;"></i>
-                                <span>Cardano (ADA)</span>
-                            </div>
-                            <div class="crypto-price">$0.52</div>
+                        
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" class="form-control" placeholder="••••••••" minlength="8" required>
                         </div>
-                        <div class="crypto-change negative">
-                            <i class="fas fa-arrow-down"></i>
-                            <span>-0.5%</span>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="termsCheckbox" required>
+                            <label for="termsCheckbox">
+                                I agree to the Terms of Service and Privacy Policy
+                            </label>
                         </div>
-                        <div style="margin-top: 15px;">
-                            <div>Your Holdings: <strong>5,200 ADA</strong></div>
-                            <div>Value: <strong>$2,704.00</strong></div>
-                        </div>
-                    </div>
-
-                    <!-- Solana -->
-                    <div class="crypto-card">
-                        <div class="crypto-header">
-                            <div class="crypto-name">
-                                <i class="fas fa-sun" style="color: #00ffa3;"></i>
-                                <span>Solana (SOL)</span>
-                            </div>
-                            <div class="crypto-price">$102.67</div>
-                        </div>
-                        <div class="crypto-change positive">
-                            <i class="fas fa-arrow-up"></i>
-                            <span>+5.7%</span>
-                        </div>
-                        <div style="margin-top: 15px;">
-                            <div>Your Holdings: <strong>22 SOL</strong></div>
-                            <div>Value: <strong class="positive">$2,258.74</strong></div>
-                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#" id="toLoginLink">Sign In</a></p>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Statistics -->
-            <div class="card">
-                <h2 class="card-title">Investment Statistics</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-wallet" style="font-size: 2rem; color: var(--primary);"></i>
-                        <div>Total Deposits</div>
-                        <div class="stat-value">$52,000</div>
+        <!-- Login Page -->
+        <div id="loginPage" class="page-container">
+            <div class="auth-container">
+                <div class="auth-card fade-in">
+                    <div class="auth-header">
+                        <h2>Welcome Back</h2>
+                        <p>Sign in to your investment account</p>
                     </div>
-                    <div class="stat-card">
-                        <i class="fas fa-money-bill-wave" style="font-size: 2rem; color: var(--warning);"></i>
-                        <div>Total Withdrawals</div>
-                        <div class="stat-value">$6,712.50</div>
+                    
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email Address</label>
+                            <input type="email" id="loginEmail" class="form-control" placeholder="john@example.com" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                        </div>
+                        
+                        <div class="form-check">
+                            <input type="checkbox" id="rememberCheckbox">
+                            <label for="rememberCheckbox">Remember me</label>
+                            <a href="#" style="margin-left: auto; color: var(--primary); text-decoration: none;">Forgot Password?</a>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                        
+                        <div class="text-center mb-2" style="color: var(--gray);">or</div>
+                        
+                        <button type="button" class="btn btn-outline w-100 mb-2">
+                            <i class="fab fa-google"></i> Sign in with Google
+                        </button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        <p>Don't have an account? <a href="#" id="toSignupLink">Sign Up</a></p>
+                        <p class="mt-1">
+                            <a href="#" id="adminLoginLink" style="color: var(--secondary);">
+                                <i class="fas fa-user-shield"></i> Admin Login
+                            </a>
+                        </p>
                     </div>
-                    <div class="stat-card">
-                        <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--success);"></i>
-                        <div>Total Profit</div>
-                        <div class="stat-value positive">$14,287.50</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div id="dashboardPage" class="page-container">
+            <div class="dashboard-container">
+                <div class="sidebar">
+                    <div class="logo mb-3">
+                        <i class="fas fa-chart-line"></i>
+                        <h1>CryptoSense</h1>
                     </div>
-                    <div class="stat-card">
-                        <i class="fas fa-percentage" style="font-size: 2rem; color: var(--secondary);"></i>
-                        <div>ROI</div>
-                        <div class="stat-value positive">27.5%</div>
+                    
+                    <div class="sidebar-nav">
+                        <a href="#" class="active" data-page="dashboard">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" data-page="portfolio">
+                            <i class="fas fa-wallet"></i>
+                            My Portfolio
+                        </a>
+                        <a href="#" data-page="deposit">
+                            <i class="fas fa-plus-circle"></i>
+                            Make Deposit
+                        </a>
+                        <a href="#" data-page="transactions">
+                            <i class="fas fa-exchange-alt"></i>
+                            Transactions
+                        </a>
+                        <a href="#" data-page="withdraw">
+                            <i class="fas fa-money-bill-wave"></i>
+                            Withdraw Funds
+                        </a>
+                        <a href="#" id="adminPanelLink">
+                            <i class="fas fa-user-shield"></i>
+                            Admin Panel
+                        </a>
+                    </div>
+                    
+                    <div class="mt-auto pt-3" style="border-top: 1px solid #334155;">
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <div style="width: 40px; height: 40px; background: var(--gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                                JD
+                            </div>
+                            <div>
+                                <h4 style="color: white; font-size: 16px;">John Doe</h4>
+                                <p style="color: #94a3b8; font-size: 14px;">Verified Investor</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline w-100" style="color: white; border-color: white;" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="main-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Investment Dashboard</h2>
+                        <button class="btn btn-primary" id="quickDepositBtn">
+                            <i class="fas fa-plus"></i> Quick Deposit
+                        </button>
+                    </div>
+                    
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <h3>Total Balance (USD)</h3>
+                            <div class="value">$45,289.50</div>
+                            <div class="positive">+12.5% this month</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Investments</h3>
+                            <div class="value">6</div>
+                            <div class="positive">All Performing Well</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>30-Day Returns</h3>
+                            <div class="value">$6,539.50</div>
+                            <div class="positive">+16.8%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Referral Earnings</h3>
+                            <div class="value">$1,250.00</div>
+                            <div class="positive">+$250 this month</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3>Recent Investments</h3>
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-eye"></i> View All
+                            </button>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Asset</th>
+                                        <th>Amount (USD)</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Returns</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Bitcoin (BTC)</strong></td>
+                                        <td>$5,000.00</td>
+                                        <td>Mar 15, 2024</td>
+                                        <td><span class="positive">Active</span></td>
+                                        <td class="positive">+$750.50</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ethereum (ETH)</strong></td>
+                                        <td>$3,500.00</td>
+                                        <td>Mar 10, 2024</td>
+                                        <td><span class="positive">Active</span></td>
+                                        <td class="positive">+$525.75</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Solana (SOL)</strong></td>
+                                        <td>$2,000.00</td>
+                                        <td>Mar 5, 2024</td>
+                                        <td><span class="positive">Active</span></td>
+                                        <td class="positive">+$450.20</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPage" class="page-container">
+            <div class="admin-container">
+                <div class="container">
+                    <div class="admin-header">
+                        <div>
+                            <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+                            <p style="color: var(--gray);">Manage users, balances, and platform settings</p>
+                        </div>
+                        <button class="btn btn-outline" id="backToDashboard">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </button>
+                    </div>
+                    
+                    <div class="admin-grid">
+                        <div class="admin-card">
+                            <h3><i class="fas fa-users"></i> User Management</h3>
+                            <div class="user-list">
+                                <div class="user-item d-flex justify-content-between align-items-center p-3 border-bottom">
+                                    <div>
+                                        <strong>John Doe</strong>
+                                        <div style="color: var(--gray); font-size: 14px;">Balance: $45,289.50</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                                <div class="user-item d-flex justify-content-between align-items-center p-3 border-bottom">
+                                    <div>
+                                        <strong>Jane Smith</strong>
+                                        <div style="color: var(--gray); font-size: 14px;">Balance: $23,450.00</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                                <div class="user-item d-flex justify-content-between align-items-center p-3">
+                                    <div>
+                                        <strong>Robert Johnson</strong>
+                                        <div style="color: var(--gray); font-size: 14px;">Balance: $67,890.25</div>
+                                    </div>
+                                    <button class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-card">
+                            <h3><i class="fas fa-dollar-sign"></i> Balance Management</h3>
+                            <div class="form-group">
+                                <label for="adminUserSelect">Select User</label>
+                                <select id="adminUserSelect" class="form-control">
+                                    <option value="1">John Doe ($45,289.50)</option>
+                                    <option value="2">Jane Smith ($23,450.00)</option>
+                                    <option value="3">Robert Johnson ($67,890.25)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="adminBalance">New Balance (USD)</label>
+                                <input type="number" id="adminBalance" class="form-control" value="45289.50" step="0.01">
+                            </div>
+                            
+                            <div class="d-flex gap-2 mb-3">
+                                <button class="btn btn-success" id="addBalanceAdmin">
+                                    <i class="fas fa-plus"></i> Add $1,000
+                                </button>
+                                <button class="btn btn-danger" id="deductBalanceAdmin">
+                                    <i class="fas fa-minus"></i> Deduct $500
+                                </button>
+                            </div>
+                            
+                            <button class="btn btn-primary w-100" id="saveBalanceAdmin">
+                                <i class="fas fa-save"></i> Save Balance
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -168,30 +1057,323 @@
     </div>
 
     <!-- Deposit Modal -->
-    <div id="depositModal" class="modal">
+    <div class="modal" id="depositModal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeDepositModal()">&times;</span>
-            <h2 style="margin-bottom: 20px;">Deposit Funds via Wallet</h2>
-            <p style="margin-bottom: 15px; opacity: 0.
-9;">Send USD (USDT, USDC) to this wallet address:</p>
-            
-            <div class="wallet-address">
-                0x742d35Cc6634C0532925a3b844Bc9eEe0A3C3e66
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Make a Deposit</h3>
+                <button class="btn" id="closeModal" style="font-size: 24px; background: none; border: none; color: var(--gray);">&times;</button>
             </div>
             
-            <div style="margin: 25px 0; padding: 15px; background: rgba(67, 97, 238, 0.1); border-radius: 12px;">
-                <i class="fas fa-info-circle" style="color: var(--primary);"></i>
-                <span style="margin-left: 10px;">
-                    Minimum deposit: $100. Deposits are credited within 15 minutes after 3 confirmations.
-                </span>
+            <div class="form-group">
+                <label for="depositAmount">Deposit Amount (USD)</label>
+                <input type="number" id="depositAmount" class="form-control" value="1000.00" min="100" step="0.01">
+                <small style="color: var(--gray);">Minimum deposit: $100.00</small>
             </div>
             
-            <button class="primary-btn" style="width: 100%;" onclick="copyWalletAddress()">
-                <i class="far fa-copy"></i> Copy Wallet Address
+            <div class="form-group">
+                <label>Select Cryptocurrency</label>
+                <div class="d-flex gap-2 mt-2">
+                    <button class="btn flex-fill" style="background: #f7931a; color: white;">Bitcoin</button>
+                    <button class="btn flex-fill" style="background: #627eea; color: white;">Ethereum</button>
+                    <button class="btn flex-fill" style="background: #26a17b; color: white;">USDT</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Wallet Address</label>
+                <div class="wallet-address">
+                    <span>1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                    <button class="btn btn-sm btn-primary">
+                        <i class="far fa-copy"></i> Copy
+                    </button>
+                </div>
+                <small style="color: var(--gray);">Send your deposit to this address. Your account will be credited once we receive 3 confirmations.</small>
+            </div>
+            
+            <button class="btn btn-primary w-100 mt-3">
+                <i class="fas fa-qrcode"></i> Show QR Code
             </button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ===== DOM ELEMENTS =====
+        const pageContainer = document.getElementById('pageContainer');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        // Navigation buttons
+        const homeLogo = document.getElementById('homeLogo');
+        const homeLink = document.getElementById('homeLink');
+        const loginLink = document.getElementById('loginLink');
+        const signupLink = document.getElementById('signupLink');
+        
+        // Page buttons
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const joinNowBtn = document.getElementById('joinNowBtn');
+        const toLoginLink = document.getElementById('toLoginLink');
+        const toSignupLink = document.getElementById('toSignupLink');
+        const adminLoginLink = document.getElementById('adminLoginLink');
+        const adminPanelLink = document.getElementById('adminPanelLink');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const backToDashboard = document.getElementById('backToDashboard');
+        
+        // Forms
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        
+        // Modal elements
+        const quickDepositBtn = document.getElementById('quickDepositBtn');
+        const depositModal = document.getElementById('depositModal');
+        const closeModal = document.getElementById('closeModal');
+        
+        // Admin elements
+        const addBalanceAdmin = document.getElementById('addBalanceAdmin');
+        const deductBalanceAdmin = document.getElementById('deductBalanceAdmin');
+        const saveBalanceAdmin = document.getElementById('saveBalanceAdmin');
+        const adminBalance = document.getElementById('adminBalance');
+        const adminUserSelect = document.getElementById('adminUserSelect');
+
+        // ===== PAGE MANAGEMENT =====
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-container').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Close mobile menu
+            navLinks.classList.remove('show');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // ===== INITIALIZATION =====
+        showPage('landingPage');
+
+        // ===== EVENT LISTENERS =====
+        
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+
+        // Navigation events
+        homeLogo.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('landingPage');
+        });
+
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('landingPage');
+        });
+
+        loginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('loginPage');
+        });
+
+        signupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('signupPage');
+        });
+
+        // Button events
+        getStartedBtn.addEventListener('click', () => {
+            showPage('signupPage');
+        });
+
+        joinNowBtn.addEventListener('click', () => {
+            showPage('signupPage');
+        });
+
+        toLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('loginPage');
+        });
+
+        toSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('signupPage');
+        });
+
+        adminLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Auto-fill admin credentials for demo
+            document.getElementById('loginEmail').value = 'admin@cryptosense.com';
+            document.getElementById('loginPassword').value = 'admin123';
+            showPage('loginPage');
+        });
+
+        adminPanelLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('adminPage');
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            showPage('landingPage');
+        });
+
+        backToDashboard.addEventListener('click', () => {
+            showPage('dashboardPage');
+        });
+
+        // Modal events
+        quickDepositBtn.addEventListener('click', () => {
+            depositModal.classList.add('active');
+        });
+
+        closeModal.addEventListener('click', () => {
+            depositModal.classList.remove('active');
+        });
+
+        depositModal.addEventListener('click', (e) => {
+            if (e.target === depositModal) {
+                depositModal.classList.remove('active');
+            }
+        });
+
+        // Form submissions
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAccepted = document.getElementById('termsCheckbox').checked;
+            
+            // Simple validation
+            if (!name || !email || !password || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (!termsAccepted) {
+                alert('Please accept the terms and conditions');
+                return;
+            }
+            
+            // Simulate successful signup
+            alert(`Account created successfully!\nWelcome to CryptoSense, ${name}!`);
+            showPage('loginPage');
+            
+            // Clear form
+            signupForm.reset();
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Demo credentials
+            const demoCredentials = {
+                'admin@cryptosense.com': 'admin123',
+                'user@example.com': 'password123',
+                'john@doe.com': 'test1234'
+            };
+            
+            if (demoCredentials[email] && demoCredentials[email] === password) {
+                if (email === 'admin@cryptosense.com') {
+                    showPage('adminPage');
+                } else {
+                    showPage('dashboardPage');
+                }
+                loginForm.reset();
+            } else {
+                alert('Invalid email or password. Try:\n\nAdmin: admin@cryptosense.com / admin123\nUser: user@example.com / password123');
+            }
+        });
+
+        // Admin functionality
+        addBalanceAdmin.addEventListener('click', () => {
+            const currentBalance = parseFloat(adminBalance.value);
+            adminBalance.value = (currentBalance + 1000).toFixed(2);
+        });
+
+        deductBalanceAdmin.addEventListener('click', () => {
+            const currentBalance = parseFloat(adminBalance.value);
+            if (currentBalance >= 500) {
+                adminBalance.value = (currentBalance - 500).toFixed(2);
+            } else {
+                alert('Balance cannot go below $0');
+            }
+        });
+
+        saveBalanceAdmin.addEventListener('click', () => {
+            const newBalance = adminBalance.value;
+            const selectedUser = adminUserSelect.options[adminUserSelect.selectedIndex].text;
+            alert(`Balance updated for ${selectedUser} to $${newBalance}`);
+        });
+
+        // Update admin balance when user changes
+        adminUserSelect.addEventListener('change', () => {
+            const userBalances = {
+                '1': '45289.50',
+                '2': '23450.00',
+                '3': '67890.25'
+            };
+            adminBalance.value = userBalances[adminUserSelect.value];
+        });
+
+        // ===== RESPONSIVE BEHAVIOR =====
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navLinks.classList.remove('show');
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                navLinks.classList.remove('show');
+            }
+        });
+
+        // Copy wallet address functionality
+        document.querySelectorAll('.btn-primary').forEach(btn => {
+            if (btn.textContent.includes('Copy')) {
+                btn.addEventListener('click', function() {
+                    const address = '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa';
+                    navigator.clipboard.writeText(address).then(() => {
+                        const originalText = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                        }, 2000);
+                    });
+                });
+            }
+        });
+
+        // ===== FEATURES SCROLL =====
+        document.getElementById('featuresLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (document.getElementById('landingPage').classList.contains('active')) {
+                document.querySelector('.features').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showPage('landingPage');
+                setTimeout(() => {
+                    document.querySelector('.features').scrollIntoView({ behavior: 'smooth' });
+                }, 500);
+            }
+        });
+
+        // ===== LEARN MORE BUTTON =====
+        document.getElementById('learnMoreBtn').addEventListener('click', () => {
+            document.querySelector('.features').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
 </body>
 </html>
