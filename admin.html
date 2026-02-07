@@ -3,140 +3,996 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoSphere | Admin Panel</title>
+    <title>CryptoSense | Secure Crypto Investments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== CSS RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --card-bg: #ffffff;
+            --sidebar-bg: #0f172a;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* ===== REUSABLE COMPONENTS ===== */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo i {
+            font-size: 1.75rem;
+            color: var(--primary);
+            background: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+        }
+
+        /* ===== AUTH PAGES ===== */
+        .auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 1rem;
+            width: 100%;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 1.25rem;
+            padding: clamp(2rem, 5vw, 3rem);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-header h2 {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .auth-header p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: #f8fafc;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-check input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .form-check label {
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 2rem;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .auth-footer a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--gray);
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .auth-divider span {
+            padding: 0 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* ===== ERROR STATES ===== */
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-control.error {
+            border-color: var(--danger);
+        }
+
+        .form-control.success {
+            border-color: var(--success);
+        }
+
+        /* ===== LANDING PAGE ===== */
+        #landingPage {
+            width: 100%;
+        }
+
+        .hero {
+            padding: 4rem 0;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: 1.5rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
+            padding: 1rem;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* ===== RESPONSIVE BREAKPOINTS ===== */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 0;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .auth-card {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn {
+                padding: 0.625rem 1.25rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-card {
+                padding: 1.25rem;
+            }
+
+            .form-control {
+                padding: 0.75rem;
+            }
+        }
+
+        /* ===== UTILITY CLASSES ===== */
+        .d-none { display: none !important; }
+        .d-block { display: block !important; }
+        .text-center { text-align: center; }
+        .w-100 { width: 100%; }
+        .mt-1 { margin-top: 0.5rem; }
+        .mt-2 { margin-top: 1rem; }
+        .mt-3 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 0.5rem; }
+        .mb-2 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 1.5rem; }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== FIXES FOR MOBILE ===== */
+        input, select, textarea, button {
+            font-size: 16px; /* Prevents iOS zoom on focus */
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header>
-            <a href="index.html" class="logo">
-                <i class="fas fa-coins"></i>
-                <span>CryptoSphere Admin</span>
-            </a>
-            
-            <div class="user-info">
-                <div class="balance-card">
-                    <div>Admin Access</div>
-                    <div style="font-weight: 600; color: var(--primary);">
-                        <i class="fas fa-user-shield"></i> Super Admin
-                    </div>
-                </div>
-                <a href="index.html" class="secondary-btn">
-                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="#" class="logo" id="homeLogo">
+                    <i class="fas fa-chart-line"></i>
+                    <h1>CryptoSense</h1>
                 </a>
-            </div>
-        </header>
-
-        <!-- Admin Content -->
-        <div class="admin-grid">
-            <!-- Sidebar -->
-            <div class="admin-sidebar">
-                <div class="admin-nav">
-                    <a href="admin.html" class="nav-item active">
-                        <i class="fas fa-users"></i>
-                        <span>User Management</span>
-                    </a>
-                    <a href="#transactions" class="nav-item">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span>Transactions</span>
-                    </a>
-                    <a href="#deposits" class="nav-item">
-                        <i class="fas fa-wallet"></i>
-                        <span>Deposit Requests</span>
-                    </a>
-                    <a href="#withdrawals" class="nav-item">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span>Withdrawal Requests</span>
-                    </a>
-                    <a href="#settings" class="nav-item">
-                        <i class="fas fa-cog"></i>
-                        <span>System Settings</span>
-                    </a>
-                    <a href="#reports" class="nav-item">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>Reports & Analytics</span>
-                    </a>
-                </div>
                 
-                <div style="margin-top: 40px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 12px;">
-                    <h4 style="margin-bottom: 15px;">Quick Stats</h4>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>Total Users:</span>
-                        <strong>1,247</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>Active Today:</span>
-                        <strong class="positive">342</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>Total Deposits:</span>
-                        <strong>$4.2M</strong>
-                    </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <div class="nav-links" id="navLinks">
+                    <a href="#" id="homeLink">Home</a>
+                    <a href="#" id="featuresLink">Features</a>
+                    <a href="#" id="aboutLink">About</a>
+                    <a href="#" id="loginNavLink">Login</a>
+                    <a href="#" id="signupNavLink" class="btn btn-primary">Sign Up Free</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div id="pageContent">
+        <!-- Landing Page (Default) -->
+        <div id="landingPage" class="container fade-in">
+            <div class="hero">
+                <h2>Smart Cryptocurrency Investments</h2>
+                <p>Start investing in Bitcoin, Ethereum, and other cryptocurrencies with as little as $100. Get professional portfolio management and secure wallet integration.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="getStartedBtn">
+                        <i class="fas fa-rocket"></i> Get Started
+                    </button>
+                    <button class="btn btn-outline" id="learnMoreBtn">
+                        <i class="fas fa-play-circle"></i> How It Works
+                    </button>
                 </div>
             </div>
 
-            <!-- Main Content -->
-            <div class="admin-content">
-                <!-- User Management -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="fas fa-users-cog"></i> User Management
-                        </h2>
-                        <div style="display: flex; gap: 15px;">
-                            <input type="text" class="form-input" placeholder="Search users..." style="width: 250px;">
-                            <button class="primary-btn">
-                                <i class="fas fa-user-plus"></i> Add User
-</button>
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Deposits</h3>
+                    <p>Deposit via secure wallet addresses. All deposits are processed in USD for easy tracking.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Portfolio Management</h3>
+                    <p>Diversify your investments across multiple cryptocurrencies with professional management.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Admin Controls</h3>
+                    <p>Complete admin panel for managing user balances and platform settings.</p>
+                </div>
+            </div>
+
+            <div class="card text-center">
+                <h2 class="mb-2">Ready to Start Investing?</h2>
+                <p class="mb-3" style="color: var(--gray);">Join thousands of investors who trust CryptoSense with their cryptocurrency investments.</p>
+                <button class="btn btn-primary" id="joinNowBtn">
+                    <i class="fas fa-user-plus"></i> Create Free Account
+                </button>
+            </div>
+        </div>
+
+        <!-- Signup Page -->
+        <div id="signupPage" class="d-none">
+            <div class="auth-page">
+                <div class="auth-container">
+                    <div class="auth-card fade-in">
+                        <div class="auth-header">
+                            <h2>Create Account</h2>
+                            <p>Start your investment journey today</p>
+                        </div>
+                        
+                        <form id="signupForm">
+                            <div class="form-group">
+                                <label for="signupName">Full Name</label>
+                                <input type="text" id="signupName" class="form-control" placeholder="John Doe" required>
+                                <div class="error-message" id="nameError">Please enter your full name</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="signupEmail">Email Address</label>
+                                <input type="email" id="signupEmail" class="form-control" placeholder="john@example.com" required>
+                                <div class="error-message" id="emailError">Please enter a valid email address</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="signupPassword">Password</label>
+                                <input type="password" id="signupPassword" class="form-control" placeholder="••••••••" minlength="8" required>
+                                <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" id="confirmPassword" class="form-control" placeholder="••••••••" required>
+                                <div class="error-message" id="confirmError">Passwords do not match</div>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input type="checkbox" id="termsCheckbox" required>
+                                <label for="termsCheckbox">
+                                    I agree to the <a href="#" style="color: var(--primary);">Terms of Service</a> and <a href="#" style="color: var(--primary);">Privacy Policy</a>
+                                </label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 mt-2">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </form>
+                        
+                        <div class="auth-divider">
+                            <span>Or continue with</span>
+                        </div>
+                        
+                        <button type="button" class="btn btn-outline w-100">
+                            <i class="fab fa-google"></i> Sign up with Google
+                        </button>
+                        
+                        <div class="auth-footer mt-3">
+                            <p>Already have an account? <a href="#" id="toLoginLink">Sign In</a></p>
                         </div>
                     </div>
-                    
-                    <div class="user-list">
-                        <!-- User 1 -->
-                        <div class="user-item">
-                            <div>
-                                <div style="font-weight: 600; font-size: 1.1rem;">John Doe</div>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">demo@cryptosphere.com</div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Status</div>
-                                <div style="color: var(--success); font-weight: 600;">
-                                    <i class="fas fa-circle" style="font-size: 0.7rem;"></i> Active
-                                </div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Balance</div>
-                                <div>
-                                    <input type="text" class="user-balance-input" value="45287.50" data-user="user1">
-                                </div>
-                            </div>
-                            <div>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Last Login</div>
-                                <div style="font-weight: 600;">Today</div>
-                            </div>
-                            <div style="display: flex; gap: 10px;">
-                                <button class="save-btn" onclick="updateUserBalance('user1')">
-                                    <i class="fas fa-save"></i> Save
-                                </button>
-                                <button class="secondary-btn" onclick="showUserDetails('user1')">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
 
-                        <!-- User 2 -->
-                        <div class="user-item">
-                            <div>
-                                <div style="font-weight: 600; font-size: 1.1rem;">Jane Smith</div>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">jane@example.com</div>
+        <!-- Login Page -->
+        <div id="loginPage" class="d-none">
+            <div class="auth-page">
+                <div class="auth-container">
+                    <div class="auth-card fade-in">
+                        <div class="auth-header">
+                            <h2>Welcome Back</h2>
+                            <p>Sign in to your investment account</p>
+                        </div>
+                        
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="loginEmail">Email Address</label>
+                                <input type="email" id="loginEmail" class="form-control" placeholder="john@example.com" required>
+                                <div class="error-message" id="loginEmailError">Please enter a valid email address</div>
                             </div>
-                            <div>
-                                <div style="font-size: 0.9rem; opacity: 0.7;">Status</div>
-                                <div style="color: var(--success); font-weight: 600;">
-                                    <i class="fas fa-circle" style="font-size: 0.7rem;"></i> Active
+                            
+                            <div class="form-group">
+                                <label for="loginPassword">Password</label>
+                                <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                                <div class="error-message" id="loginPasswordError">Please enter your password</div>
+                                <div class="text-right mt-1">
+                                    <a href="#" style="color: var(--primary); text-decoration: none; font-size: 0.9rem;">Forgot Password?</a>
                                 </div>
                             </div>
-                            <div>
-                                <div style="font-size: 0.9rem; opacity:
+                            
+                            <div class="form-check">
+                                <input type="checkbox" id="rememberCheckbox">
+                                <label for="rememberCheckbox">Remember me</label>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary w-100 mt-2">
+                                <i class="fas fa-sign-in-alt"></i> Sign In
+                            </button>
+                        </form>
+                        
+                        <div class="auth-divider">
+                            <span>Or continue with</span>
+                        </div>
+                        
+                        <button type="button" class="btn btn-outline w-100">
+                            <i class="fab fa-google"></i> Sign in with Google
+                        </button>
+                        
+                        <div class="auth-footer mt-3">
+                            <p>Don't have an account? <a href="#" id="toSignupLink">Sign Up</a></p>
+                            <p class="mt-1">
+                                <a href="#" id="adminLoginLink" style="color: var(--secondary);">
+                                    <i class="fas fa-user-shield"></i> Admin Login
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const pageContent = document.getElementById('pageContent');
+        const landingPage = document.getElementById('landingPage');
+        const signupPage = document.getElementById('signupPage');
+        const loginPage = document.getElementById('loginPage');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        // Navigation Links
+        const homeLogo = document.getElementById('homeLogo');
+        const homeLink = document.getElementById('homeLink');
+        const loginNavLink = document.getElementById('loginNavLink');
+        const signupNavLink = document.getElementById('signupNavLink');
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const joinNowBtn = document.getElementById('joinNowBtn');
+        
+        // Auth Links
+        const toLoginLink = document.getElementById('toLoginLink');
+        const toSignupLink = document.getElementById('toSignupLink');
+        const adminLoginLink = document.getElementById('adminLoginLink');
+        
+        // Forms
+        const signupForm = document.getElementById('signupForm');
+        const loginForm = document.getElementById('loginForm');
+        
+        // Show Page Function
+        function showPage(page) {
+            // Hide all pages
+            landingPage.classList.add('d-none');
+            signupPage.classList.add('d-none');
+            loginPage.classList.add('d-none');
+            
+            // Show selected page
+            if (page === 'landing') {
+                landingPage.classList.remove('d-none');
+            } else if (page === 'signup') {
+                signupPage.classList.remove('d-none');
+            } else if (page === 'login') {
+                loginPage.classList.remove('d-none');
+            }
+            
+            // Close mobile menu if open
+            navLinks.classList.remove('active');
+        }
+        
+        // Initialize with landing page
+        showPage('landing');
+        
+        // Mobile menu toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Navigation Events
+        homeLogo.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('landing');
+        });
+        
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('landing');
+        });
+        
+        loginNavLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('login');
+        });
+        
+        signupNavLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('signup');
+        });
+        
+        getStartedBtn.addEventListener('click', () => {
+            showPage('signup');
+        });
+        
+        joinNowBtn.addEventListener('click', () => {
+            showPage('signup');
+        });
+        
+        // Auth Navigation Events
+        toLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('login');
+        });
+        
+        toSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('signup');
+        });
+        
+        adminLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // For demo, show a mock admin login
+            alert('Admin login feature would connect to backend authentication. For demo purposes, use:\n\nEmail: admin@cryptosense.com\nPassword: admin123');
+        });
+        
+        // Form Validation Functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+        
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+            
+            const inputElement = document.getElementById(elementId.replace('Error', ''));
+            inputElement.classList.add('error');
+            inputElement.classList.remove('success');
+        }
+        
+        function clearError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.classList.remove('show');
+            
+            const inputElement = document.getElementById(elementId.replace('Error', ''));
+            inputElement.classList.remove('error');
+        }
+        
+        function showSuccess(inputId) {
+            const inputElement = document.getElementById(inputId);
+            inputElement.classList.add('success');
+            inputElement.classList.remove('error');
+        }
+        
+        // Signup Form Validation
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            
+            // Clear previous errors
+            clearError('nameError');
+            clearError('emailError');
+            clearError('passwordError');
+            clearError('confirmError');
+            
+            let isValid = true;
+            
+            // Validate name
+            if (!name) {
+                showError('nameError', 'Full name is required');
+                isValid = false;
+            } else {
+                showSuccess('signupName');
+            }
+            
+            // Validate email
+            if (!email) {
+                showError('emailError', 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                showSuccess('signupEmail');
+            }
+            
+            // Validate password
+            if (!password) {
+                showError('passwordError', 'Password is required');
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                showError('passwordError', 'Password must be at least 8 characters');
+                isValid = false;
+            } else {
+                showSuccess('signupPassword');
+            }
+            
+            // Validate confirm password
+            if (!confirmPassword) {
+                showError('confirmError', 'Please confirm your password');
+                isValid = false;
+            } else if (password !== confirmPassword) {
+                showError('confirmError', 'Passwords do not match');
+                isValid = false;
+            } else {
+                showSuccess('confirmPassword');
+            }
+            
+            // Validate terms
+            if (!termsChecked) {
+                alert('Please accept the Terms of Service and Privacy Policy');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Simulate successful signup
+                alert(`Account created successfully!\n\nWelcome to CryptoSense, ${name}!`);
+                // In a real app, you would submit to backend here
+                console.log('Signup data:', { name, email, password });
+                
+                // For demo, redirect to login
+                setTimeout(() => {
+                    showPage('login');
+                    // Pre-fill the login form
+                    document.getElementById('loginEmail').value = email;
+                    document.getElementById('loginPassword').value = password;
+                }, 500);
+            }
+        });
+        
+        // Login Form Validation
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // Clear previous errors
+            clearError('loginEmailError');
+            clearError('loginPasswordError');
+            
+            let isValid = true;
+            
+            // Validate email
+            if (!email) {
+                showError('loginEmailError', 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('loginEmailError', 'Please enter a valid email address');
+                isValid = false;
+            } else {
+                showSuccess('loginEmail');
+            }
+            
+            // Validate password
+            if (!password) {
+                showError('loginPasswordError', 'Password is required');
+                isValid = false;
+            } else {
+                showSuccess('loginPassword');
+            }
+            
+            if (isValid) {
+                // Simulate login
+                if (email === 'admin@cryptosense.com' && password === 'admin123') {
+                    alert('Admin login successful! Redirecting to admin panel...');
+                    // In a real app, redirect to admin panel
+                } else {
+                    alert('Login successful! Welcome back to CryptoSense.');
+                    // In a real app, redirect to dashboard
+                }
+                
+                console.log('Login data:', { email, password });
+                
+                // For demo, reset form
+                loginForm.reset();
+            }
+        });
+        
+        // Real-time validation for signup form
+        document.getElementById('signupName').addEventListener('input', function() {
+            if (this.value.trim()) {
+                showSuccess('signupName');
+                clearError('nameError');
+            }
+        });
+        
+        document.getElementById('signupEmail').addEventListener('input', function() {
+            if (validateEmail(this.value.trim())) {
+                showSuccess('signupEmail');
+                clearError('emailError');
+            }
+        });
+        
+        document.getElementById('signupPassword').addEventListener('input', function() {
+            if (validatePassword(this.value)) {
+                showSuccess('signupPassword');
+                clearError('passwordError');
+            }
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('signupPassword').value;
+            if (this.value === password && password.length >= 8) {
+                showSuccess('confirmPassword');
+                clearError('confirmError');
+            }
+        });
+        
+        // Real-time validation for login form
+        document.getElementById('loginEmail').addEventListener('input', function() {
+            if (validateEmail(this.value.trim())) {
+                showSuccess('loginEmail');
+                clearError('loginEmailError');
+            }
+        });
+        
+        document.getElementById('loginPassword').addEventListener('input', function() {
+            if (this.value.length > 0) {
+                showSuccess('loginPassword');
+                clearError('loginPasswordError');
+            }
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!navLinks.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+        
+        // Close mobile menu on link click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
